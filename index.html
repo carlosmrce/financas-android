@@ -295,9 +295,9 @@
     </div>
     <div class="content">
       <div class="filter-row">
-        <button class="filter-btn active" id="hf-day" onclick="setHFilter('day')">Hoje</button>
+        <button class="filter-btn" id="hf-day" onclick="setHFilter('day')">Hoje</button>
         <button class="filter-btn" id="hf-week" onclick="setHFilter('week')">Semana</button>
-        <button class="filter-btn" id="hf-month" onclick="setHFilter('month')">Mês</button>
+        <button class="filter-btn active" id="hf-month" onclick="setHFilter('month')">Mês</button>
       </div>
       <div id="history-list"><div class="loading">Carregando...</div></div>
     </div>
@@ -382,7 +382,7 @@ let currentScreen = '';
 let pinInput = '';
 let recognition = null;
 let isListening = false;
-let hFilter = 'day';
+let hFilter = 'month';
 let rFilter = 'month';
 
 // ── CONFIG ──
