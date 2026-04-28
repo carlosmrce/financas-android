@@ -70,14 +70,16 @@ function listar(p) {
 
   const { start, end } = dateRange(p.periodo || 'month');
 
+  const tz = 'America/Sao_Paulo';
+
   const transacoes = rows.slice(1)
     .filter(r => {
-      const d = parseBRDate(String(r[0]));
+      const d = parseBRDate(r[0]);
       return d && d >= start && d < end;
     })
     .map(r => ({
-      data:      r[0],
-      hora:      r[1],
+      data:      r[0] instanceof Date ? Utilities.formatDate(r[0], tz, 'dd/MM/yyyy') : r[0],
+      hora:      r[1] instanceof Date ? Utilities.formatDate(r[1], tz, 'HH:mm')      : r[1],
       usuario:   r[2],
       tipo:      r[3],
       valor:     r[4],
@@ -102,7 +104,7 @@ function resumo(p) {
   const categorias = {};
 
   rows.slice(1).forEach(r => {
-    const d = parseBRDate(String(r[0]));
+    const d = parseBRDate(r[0]);
     if (!d || d < start || d >= end) return;
 
     const tipo  = r[3];
@@ -137,9 +139,11 @@ function getSheet() {
   return sheet;
 }
 
-function parseBRDate(str) {
-  // Handles "dd/MM/yyyy" or Date objects serialized as strings
-  const parts = str.split('/');
+function parseBRDate(val) {
+  if (val instanceof Date) {
+    return new Date(val.getFullYear(), val.getMonth(), val.getDate());
+  }
+  const parts = String(val).split('/');
   if (parts.length !== 3) return null;
   const [d, m, y] = parts.map(Number);
   if (!d || !m || !y) return null;
