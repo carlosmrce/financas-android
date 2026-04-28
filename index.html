@@ -659,8 +659,12 @@ async function loadHistory() {
   el.innerHTML = '<div class="loading">Carregando...</div>';
   try {
     const d = await api('listar', { periodo: hFilter });
-    renderTxList(d.status === 'ok' ? d.transacoes || [] : [], el);
-  } catch(_) { el.innerHTML = '<div class="empty"><p>Erro ao carregar</p></div>'; }
+    if (d.status === 'ok') {
+      renderTxList(d.transacoes || [], el);
+    } else {
+      el.innerHTML = `<div class="empty"><p>Erro do servidor: ${esc(d.error || 'resposta inválida')}</p></div>`;
+    }
+  } catch(e) { el.innerHTML = `<div class="empty"><p>Erro de conexão: ${esc(e.message)}</p></div>`; }
 }
 
 function renderTxList(txs, container) {
@@ -699,6 +703,10 @@ async function loadReport() {
   cEl.innerHTML = '';
   try {
     const d = await api('resumo', { periodo: rFilter });
+    if (d.status !== 'ok') {
+      sEl.innerHTML = `<div class="empty" style="grid-column:1/-1"><p>Erro do servidor: ${esc(d.error || 'resposta inválida')}</p></div>`;
+      return;
+    }
     if (d.status === 'ok') {
       const bal = d.entradas - d.saidas;
       sEl.innerHTML = `
@@ -719,7 +727,7 @@ async function loadReport() {
         cEl.innerHTML = '<div class="empty"><p>Nenhum dado disponível</p></div>';
       }
     }
-  } catch(_) { sEl.innerHTML = '<div class="empty" style="grid-column:1/-1"><p>Erro ao carregar</p></div>'; }
+  } catch(e) { sEl.innerHTML = `<div class="empty" style="grid-column:1/-1"><p>Erro de conexão: ${esc(e.message)}</p></div>`; }
 }
 
 // ── SETTINGS ──
