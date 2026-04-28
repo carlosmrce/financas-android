@@ -1,4 +1,4 @@
-const CACHE = 'financas-voz-v1';
+const CACHE = 'financas-voz-v2';
 const SHELL = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
